@@ -82,16 +82,16 @@ class MainActivity : AppCompatActivity() {
         Log.d("TAG", uri.toString())
         val addbtn=findViewById<Button>(R.id.AddBtn)
         addbtn.setOnClickListener {
-            val shortcutManager = getSystemService(ShortcutManagerCompat::class.java)
+            val shortcutManager = getSystemService(ShortcutManager::class.java)
 //            if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
                 val intent2 = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.yahoo.com/"))
                 //intent.setClassName(packagename, activityname)
                 //intent.putExtra("key", "こんにちわ")
-                val pinShortcutInfo = ShortcutInfoCompat.Builder(this, "myshortcut")
+                val pinShortcutInfo = ShortcutInfo.Builder(this, "myshortcut")
                     .setShortLabel("D-App")//アプリ名
-                    .setIcon(IconCompat.createWithBitmap(convert(b64data)))
-                    .setIntents(arrayOf(intent,intent2))
+                    .setIcon(Icon.createWithBitmap(convert(b64data)))
+                    .setIntent(intent)
                     .build()
 
 //                val pinnedShortcutCallbackIntent =
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 //                        this, 0, pinnedShortcutCallbackIntent,
 //                        PendingIntent.FLAG_IMMUTABLE
 //                    )
-            ShortcutManagerCompat.requestPinShortcut(this,
+            shortcutManager.requestPinShortcut(
                     pinShortcutInfo,
                     null
                 )
