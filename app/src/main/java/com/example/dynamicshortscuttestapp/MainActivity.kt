@@ -19,6 +19,9 @@ import android.util.Base64
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import kotlin.math.log
@@ -79,31 +82,32 @@ class MainActivity : AppCompatActivity() {
         Log.d("TAG", uri.toString())
         val addbtn=findViewById<Button>(R.id.AddBtn)
         addbtn.setOnClickListener {
-            val shortcutManager = getSystemService(ShortcutManager::class.java)
-            if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported) {
+            val shortcutManager = getSystemService(ShortcutManagerCompat::class.java)
+//            if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
-                intent.action = Intent.ACTION_DEFAULT
+                val intent2 = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.yahoo.com/"))
                 //intent.setClassName(packagename, activityname)
                 //intent.putExtra("key", "こんにちわ")
-                val pinShortcutInfo = ShortcutInfo.Builder(this, "myshortcut")
+                val pinShortcutInfo = ShortcutInfoCompat.Builder(this, "myshortcut")
                     .setShortLabel("D-App")//アプリ名
-                    .setLongLabel("Dynamic-ShortCut Sample Application")
-                    .setIcon(Icon.createWithBitmap(convert(b64data)))
-                    .setIntent(intent)
+                    .setIcon(IconCompat.createWithBitmap(convert(b64data)))
+                    .setIntents(arrayOf(intent,intent2))
                     .build()
-                val pinnedShortcutCallbackIntent =
-                    shortcutManager.createShortcutResultIntent(pinShortcutInfo)
-                val successCallback =
-                    PendingIntent.getBroadcast(
-                        this, 0, pinnedShortcutCallbackIntent,
-                        PendingIntent.FLAG_IMMUTABLE
-                    )
-                val b = shortcutManager.requestPinShortcut(
+
+//                val pinnedShortcutCallbackIntent =
+//                    shortcutManager.createShortcutResultIntent(pinShortcutInfo)
+//                val successCallback =
+//                    PendingIntent.getBroadcast(
+//                        this, 0, pinnedShortcutCallbackIntent,
+//                        PendingIntent.FLAG_IMMUTABLE
+//                    )
+            ShortcutManagerCompat.requestPinShortcut(this,
                     pinShortcutInfo,
-                    successCallback.intentSender
+                    null
                 )
+
                 //Util.showToast(this, "set pinned shortcuts " + (b ? "success" : "failed") + "!");
-            }
+//            }
         }
 
         val getbtn = findViewById<Button>(R.id.GetBtn)
